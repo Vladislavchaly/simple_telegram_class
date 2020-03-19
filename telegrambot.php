@@ -10,10 +10,10 @@ class TelegramBot
     public $chatId;
 
     /**
+     * TelegramBot constructor.
      * @param $token
      */
-    public function setToken($token)
-    {
+    function __construct($token){
         $this->token = $token;
     }
 
