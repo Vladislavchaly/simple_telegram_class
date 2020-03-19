@@ -5,12 +5,14 @@ require_once "telegrambot.php";
 $telegram = new TelegramBot();
 
 $telegram->setToken("759558834:AAEK8E9huakI5RmkytQkyf-6HMSF76a0A8M");
-
+//get input message
 $data = $telegram->getData();
 
 $text = $data->text;
 
 
+
+//send message
 switch ($text) {
     case "test":
         $telegram->sendMessage("test answer");
