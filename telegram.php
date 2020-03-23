@@ -1,8 +1,10 @@
 <?php
-
+// class telegram bot
 require_once "telegrambot.php";
+
 require_once "config.php";
-$telegram = new TelegramBot("759558834:AAEK8E9huakI5RmkytQkyf-6HMSF76a0A8M");
+
+$telegram = new TelegramBot($token);
 
 $data = $telegram->getData();
 
