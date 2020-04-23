@@ -29,3 +29,11 @@ switch ($text) {
         break;
 }
 
+$api1c = new Api1c();
+$api1c_request = $api1c->requestGET("Start", "380675747884",  []);
+
+
+
+var_dump($api1c_request);
+
+

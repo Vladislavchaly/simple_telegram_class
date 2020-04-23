@@ -27,6 +27,13 @@ class TelegramBot
     }
 
     /**
+     * @return mixed
+     */
+    public function getUpdates()
+    {
+        return $this->request('getUpdates', []);
+    }
+    /**
      * @param $message
      * @param array $keyboard
      * @return mixed
