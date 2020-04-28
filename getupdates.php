@@ -7,4 +7,4 @@ $telegram = new TelegramBot($token);
 
 $telegram->getUpdates();
 
-print_r($telegram);
+var_dump($telegram);

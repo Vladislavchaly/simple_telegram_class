@@ -13,7 +13,8 @@ class TelegramBot
      * TelegramBot constructor.
      * @param $token
      */
-    function __construct($token){
+    function __construct($token)
+    {
         $this->token = $token;
     }
 
@@ -33,6 +34,7 @@ class TelegramBot
     {
         return $this->request('getUpdates', []);
     }
+
     /**
      * @param $message
      * @param array $keyboard

@@ -29,11 +29,13 @@ switch ($text) {
         break;
 }
 
-$api1c = new Api1c();
-$api1c_request = $api1c->requestGET("Start", "380675747884",  []);
+$api1c = new Api1c($api_url);
+$api1c_request = $api1c->requestGET("Start", "380675747884");
 
 
 
 var_dump($api1c_request);
+echo "<hr>";
+$api1c_request_POST = $api1c->requestPOST("get_info_list_all",  ['id' => '380667864615', 'club_id' => '5']);
 
-
+var_dump($api1c_request_POST);
