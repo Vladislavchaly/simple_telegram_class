@@ -1,13 +1,13 @@
 <?php
 // telegram bot token
-$token = "";
+$token = "759558834:AAEK8E9huakI5RmkytQkyf-6HMSF76a0A8M";
 
 
 //url 1c http request
-$api_url = "";
+$api_url = "http://89.162.142.62/A2-TEST/hs/ChatBot";
 //authorisation data 1c
-$username_1c = "";
-$password_1c = "";
+$username_1c = "PersonalAccount";
+$password_1c = "Sport2015";
 
 // MySQL database
 
