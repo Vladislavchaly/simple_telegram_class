@@ -29,7 +29,7 @@ switch ($text) {
         break;
 }
 
-$api1c = new Api1c($api_url);
+$api1c = new Api1c($api_url, $username_1c, $password_1c);
 $api1c_request = $api1c->requestGET("Start", "380675747884");
 
 
