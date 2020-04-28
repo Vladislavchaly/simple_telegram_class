@@ -15,7 +15,7 @@ class Api1c
     public function requestPOST($method, $posts)
     {
         $ch = curl_init();
-        $url = $this->api_url . '/' . $method . "/" . $phone;
+        $url = $this->api_url . '/' . $method . "/";
         $username = self::USERNAME;
         $password = self::PASSWORD;
 
