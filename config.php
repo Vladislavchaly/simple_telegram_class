@@ -1,6 +1,6 @@
 <?php
 // telegram bot token
-$token = "";
+$token = " ";
 
 // MySQL database
 
