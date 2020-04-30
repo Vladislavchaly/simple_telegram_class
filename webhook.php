@@ -5,4 +5,4 @@ require_once "config.php";
 
 $telegram = new TelegramBot($token);
 
-echo $telegram->setWebhook("https://chalybot.chaly.xyz/telegram.php");
+echo $telegram->setWebhook($url_webhook);

@@ -6,9 +6,13 @@
 class Bot
 {
 
-
-    public $Telegram;
-    public $Api_1c;
+    /**
+     * @var TelegramBot
+     */
+    private $Telegram;
+    private $Api_1c;
+    private $db;
+    public $chatId;
 
     /**
      * Bot constructor.
@@ -16,35 +20,33 @@ class Bot
      * @param $api_1c_url
      * @param $username_1c
      * @param $password_1c
+     * @param $host
+     * @param $db
+     * @param $user
+     * @param $pass
      */
-    public function __construct($token, $api_1c_url, $username_1c, $password_1c)
+    public function __construct($token, $api_1c_url, $username_1c, $password_1c, $host, $db, $user, $pass)
     {
-
         $this->Telegram = new TelegramBot($token);
         $this->Api_1c = new Api1c($api_1c_url, $username_1c, $password_1c);
+        $this->db = new DB($host, $db, $user, $pass);
     }
 
+
     public function Run(){
-
         $data = $this->Telegram->getData();
-
+        $this->chatId = $data->chat->id;
+        $chat_id = $data->chat->id;
         $text = $data->text;
-
-        switch ($text) {
-            case "test":
-                $this->Telegram->sendMessage("test answer");
-                break;
-            case "test button":
-                $this->Telegram->sendMessage("test answer", [["test 1", "test 2"], ["test 3", "test 4"],
-                    [["text" => "test 5", 'request_contact' => true]]]);
-                break;
-            case "test photo":
-                $this->Telegram->sendPhoto(
-                    "https://res.cloudinary.com/tecice/image/upload/v1581216237/palm-tree.png",
-                    "test answer",
-                    [["test 1", "test 2"]]
-                );
-                break;
+        if ($this->checkUser() == true){
+            $this->Telegram->sendMessage("check user true");
         }
+    }
+
+    /**
+     * @return string
+     */
+    private function checkUser(){
+       return $this->db->checkUser($this->chatId);
     }
 }
