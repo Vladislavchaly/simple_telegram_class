@@ -6,40 +6,35 @@ require_once "config.php";
 
 
 $bot = new Bot($token,$api_url, $username_1c, $password_1c, $db_host, $db_name, $db_user, $db_password);
-$run = $bot->Run();
-print_r($run);
+$bot->Run();
 
 
-//$dbhost = 'lenzcars.mysql.tools';
-//$dbport = '3306';
-//$dbname = 'lenzcars_trenerbot';
+//$db = new DB($db_host, $db_name, $db_user, $db_password);
 //
-//$dsn = "mysql:host=$dbhost;port=$dbport;dbname=$dbname";
-//$username = 'lenzcars_trenerbot';
-//$password = 'n5P_m#fH80';
-//
-//
-//
-//
-//
-//$chat_id = 12345;
-//$dbh = new PDO($dsn, $username, $password);
-//$check_user_db = $dbh->prepare('SELECT telegram_id FROM customers WHERE telegram_id ='. $chat_id);
-//$check_user_db->bindParam(':telegram_id', $chat_id, PDO::PARAM_INT); //<-- Автоматически очищено с помощью PDO
-//$check_user_db_execute = $check_user_db->execute();
-//$row = $check_user_db->fetch(PDO::FETCH_OBJ);
-//print_r($row);
-//$row = $check_user_db->fetch(PDO::FETCH_OBJ);
-//print_r($row);
-//$mysqli = new mysqli("lenzcars.mysql.tools", "lenzcars_trenerbot", "n5P_m#fH80", "lenzcars_trenerbot");
-//if ($mysqli->connect_errno) {
-//    echo "Не удалось подключиться к MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+//$api_1c = new Api1c($api_url, $username_1c, $password_1c);
+//$get_user_1c = $api_1c->start("380667074533");
+//print_r($get_user_1c);
+//if ($get_user_1c['post'] == true) {
+//    print_r($db->addUser(414204140, 414204140, 414204140, 414204140, 414204140));
 //}
-//$res = $mysqli->query("SELECT * FROM customers");
-//$row = $res->fetch_assoc();
-//print_r($row);
+//$post = $get_user_1c['post'];
+//if (isset($get_user_1c['post'])){
+//    echo "all ok". $post;
+//}else{
+//    echo "not ok";
+//}
+//print_r($get_user_1c);
+//
+//$db = new DB($db_host, $db_name, $db_user, $db_password);
+//$checkUser_db = $db->checkUser(414204140);
+//if ($checkUser_db == true){
+//    //получить шаги по должности пользователя
+//    echo "all ok";
+//}else{
+//  echo "not ok";
+//}
 
-
+//пример использования бота!
 //switch ($text) {
 //    case "/start":
 //        $this->Telegram->sendMessage("test answer", [

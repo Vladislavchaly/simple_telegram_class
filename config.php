@@ -1,7 +1,6 @@
 <?php
 // telegram bot token
 $token = "";
-//telegram bot web hook url
 $url_webhook = "";
 
 //url 1c http request
