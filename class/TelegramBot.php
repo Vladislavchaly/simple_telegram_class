@@ -55,6 +55,18 @@ class TelegramBot
             ]);
     }
 
+    public function sendInline_keyboard($message, $keyboard = array())
+    {
+        return $this->request("sendMessage",
+            [
+                'chat_id' => $this->chatId,
+                'text' => $message,
+                'reply_markup' => [
+                    'inline_keyboard' => $keyboard
+                    ]
+            ]);
+    }
+
     /**
      * @param $url
      * @param string $message
@@ -82,8 +94,14 @@ class TelegramBot
     public function getData()
     {
         $data = json_decode(file_get_contents('php://input'));
-        $this->chatId = $data->message->chat->id;
-        return $data->message;
+
+        if ($data->message->chat->id){
+            $this->chatId = $data->message->chat->id;
+        }elseif($data->callback_query->from->id){
+            $this->chatId = $data->callback_query->from->id;
+        }
+
+        return $data;
     }
 
     /**

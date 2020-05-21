@@ -17,6 +17,7 @@ $bot->Run();
 //if ($get_user_1c['post'] == true) {
 //    print_r($db->addUser(414204140, 414204140, 414204140, 414204140, 414204140));
 //}
+//print_r($api_1c->get_info_list_all("380667074533", 9));
 //$post = $get_user_1c['post'];
 //if (isset($get_user_1c['post'])){
 //    echo "all ok". $post;
@@ -55,3 +56,66 @@ $bot->Run();
 //        );
 //        break;
 //}
+
+
+//    private function answerMessage($post){
+//        switch ($post) {
+//            case "Персональный тренер":
+//                $this->Telegram->sendMessage("test answer", [
+//                    ["Получить информацию о записях"],
+//                    ["Записать клиента"],
+//                    ["Отменить запись"]
+//                ]);
+//                break;
+//            case "Сервис":
+//                $this->Telegram->sendMessage("test answer", [
+//                    ["Получить информацию о записях"]
+//                ]);
+//                break;
+//            case "Client":
+//                $this->Telegram->sendMessage("test answer", [
+//                    ["Получить информацию о записях"],
+//                    ["записать клиента"],
+//                    ["Отменить запись"]
+//                ]);
+//                break;
+//        }
+//    }
+
+
+
+
+
+
+
+
+//switch ($data->message->text) {
+//    case "Получить информацию о записях":
+//        $this->Telegram->sendMessage("Получить информацию о записях", [
+//            ["Все записи", "Выбрать Дату"],
+//            ["Вернуться в меню"]
+//        ]);
+//        break;
+//    case "Все записи";
+//        $this->get_info_list_all();
+//        break;
+//    case "Выбрать Дату";
+//        $this->get_info_list_date();
+//        break;
+//    default:
+//        $this->Telegram->sendMessage("Выберете действие!", [
+//            ["Получить информацию о записях"],
+//            ["Записаться"],
+//            ["Отменить запись"]
+//        ]);
+//        break;
+//}
+
+
+//case "test";
+//
+//$this->Telegram->sendInline_keyboard("test", [
+//    [["text" => "test", "callback_data" => "button_0"]]
+//]);
+//
+//break;
