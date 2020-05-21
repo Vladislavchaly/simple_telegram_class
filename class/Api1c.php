@@ -219,11 +219,11 @@ class Api1c
         return $add_info_trainer;
     }
 
-    public function add_info_trainer($club_id, $id_service, $IDClient, $date, $id){
-        //тут должен быть метод добавления пользователя
-        $add_info_trainer =  $this->requestPOST('add_info_trainer', ["club_id" => $club_id, "id_service" => $id_service, "IDClient" => $IDClient, "date" => $date, "id" => $id]);
-        return $add_info_trainer;
-    }
+//    public function add_info_trainer($club_id, $id_service, $IDClient, $date, $id){
+//        //тут должен быть метод добавления пользователя
+//        $add_info_trainer =  $this->requestPOST('add_info_trainer', ["club_id" => $club_id, "id_service" => $id_service, "IDClient" => $IDClient, "date" => $date, "id" => $id]);
+//        return $add_info_trainer;
+//    }
 
 
     /**
