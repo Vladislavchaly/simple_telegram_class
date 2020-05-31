@@ -84,7 +84,7 @@ class Bot
             $this->Telegram->sendMessage("test", [ //временный вариант перенести в регистрацию пользовтеля метод registerUser
                 ["Получить информацию о записях"],
                 ["Записаться"],
-                ["Отменить запись"]
+                ["Вернуться в меню"]
             ]);
         } else {
             $this->Telegram->sendMessage("Авторизируйтесь, для начала использования бота", [
@@ -123,6 +123,9 @@ class Bot
             switch ($data->message->text) {
                 case "Получить информацию о записях":
                     $this->get_info_list_all();
+                    break;
+                case "Отменить запись":
+                    $this->delete_info_list_all();
                     break;
                 case "Записаться":
                     $this->newOrder_client();
@@ -193,14 +196,34 @@ class Bot
     {
         $list_all = $this->Api_1c->get_info_list_all($this->phone, $this->club_id);
         if ($list_all == true) {
-            foreach ($list_all as $list_item) {
-                $this->Telegram->sendMessage($list_item['date'] . "\n" . $list_item['start'] . " - " . $list_item['end'] . "\n" . $list_item['Service'], [["Вернуться в меню"]]);
+            if (isset($list_all[1])) {
+                foreach ($list_all as $list_item) {
+                    $this->Telegram->sendMessage($list_item['date'] . "\n" . $list_item['start'] . " - " . $list_item['end'] . "\n" . $list_item['Service'], [["Вернуться в меню"]]);
+                }
+            }else{
+                $this->Telegram->sendMessage($list_all['date'] . "\n" . $list_all['start'] . " - " . $list_all['end'] . "\n" . $list_all['Service'], [["Вернуться в меню"]]);
             }
         } else {
             $this->Telegram->sendMessage("Записей нет.", [["Вернуться в меню"]]);
         }
     }
 
+    private function delete_info_list_all()
+    {
+        $this->db->addCurrentstep($this->chatId, 'delete_info_services');
+        $list_all = $this->Api_1c->get_info_list_all($this->phone, $this->club_id);
+        if ($list_all == true) {
+            if (isset($list_all[1])) {
+                foreach ($list_all as $list_item) {
+                    $this->Telegram->sendInline_keyboard($list_item['date'] . "\n" . $list_item['start'] . " - " . $list_item['end'] . "\n" . $list_item['Service'], [[["text" => 'Удалить', "callback_data" => "servicedelete_" . $list_item['IDshedule']]]]);
+                }
+            }else{
+                $this->Telegram->sendInline_keyboard($list_all['date'] . "\n" . $list_all['start'] . " - " . $list_all['end'] . "\n" . $list_all['Service'], [[["text" => 'Удалить', "callback_data" => "servicedelete_" . $list_all['IDshedule']]]]);
+            }
+        } else {
+            $this->Telegram->sendMessage("Записей нет.", [["Вернуться в меню"]]);
+        }
+    }
 
     private function get_info_list_date()
     {
@@ -215,12 +238,14 @@ class Bot
         if (empty($checkOrder)) {
             $phone = str_replace("+", "", $this->phone);
             $this->db->newOrder($this->chatId, $phone);
-            $this->Telegram->sendMessage("Нужно придумать заголовок, Шаг: выбор как пользователь будет начинать создание заказа.", [["Персональная тренировка", "Групповое занятие"], ["Вернуться в меню"]]);
+//            $this->Telegram->sendMessage("Нужно придумать заголовок, Шаг: выбор как пользователь будет начинать создание заказа.", [["Персональная тренировка", "Групповое занятие"], ["Вернуться в меню"]]);
 //            $this->Telegram->sendMessage("Нужно придумать заголовок, Шаг: выбор как пользователь будет начинать создание заказа.", [["Услуги", "Тренера"], ["Вернуться в меню"]]);
-        } else {
-            $this->Telegram->sendMessage('Возникла ошибка при создании заказа, попробуйте позже', [["Вернуться в меню"]]);
-            //some do
         }
+//        else {
+//            $this->Telegram->sendMessage('Возникла ошибка при создании заказа, попробуйте позже', [["Вернуться в меню"]]);
+            //some do
+//        }
+        $this->Telegram->sendMessage("Нужно придумать заголовок, Шаг: выбор как пользователь будет начинать создание заказа.", [["Персональная тренировка", "Групповое занятие"], ["Вернуться в меню"]]);
     }
 
     private function services_PT_Order_client()
@@ -256,6 +281,7 @@ class Bot
 
     private function club_Order_client($text)
     {
+
         switch ($text) {
             case "ул. Шекспира, 1-А":
                 $club_id = 1;
@@ -310,24 +336,29 @@ class Bot
             case "services_Order_client":  //если последний шаг
                 $this->services_Order_client_branch($callback_array);
                 break;
+            case "delete_info_services":
+                $response = $this->Api_1c->remove_info_trainer($callback_array[1], $this->phone);
+                $this->Telegram->sendMessage($response, [["Вернуться в меню"]]);
+                break;
+
         }
     }
 
     private function services_Order_client_branch($callback_array)
     {
 //        $this->Telegram->sendMessage('test ' . $callback_array[0] . $callback_array[1]);
-
+        $checkOrder = $this->db->checkOrder($this->chatId);
         switch ($callback_array[0]) {
             case "serviceCategoryPt":
-//                $this->Telegram->sendMessage('test Pt'. $callback_array[0]. $callback_array[1]);
-                $get_list_services_club = $this->Api_1c->get_list_services_Pt_by_category_club($this->club_id, $callback_array[1]);
+                $this->Telegram->sendMessage('test Pt'. $callback_array[0]. $callback_array[1]);
+                $get_list_services_club = $this->Api_1c->get_list_services_Pt_by_category_club($checkOrder->club_id, $callback_array[1]);
                 $this->Telegram->sendInline_keyboard(
                     "Выберите услугу", $get_list_services_club
                 );
                 break;
             case "serviceCategorygroup":
-//                $this->Telegram->sendMessage('test group'. $callback_array[0]. $callback_array[1]);
-                $get_list_services_club = $this->Api_1c->get_list_services_group_by_category_club($this->club_id, $callback_array[1]);
+                $this->Telegram->sendMessage('test group'. $callback_array[0]. $callback_array[1]);
+                $get_list_services_club = $this->Api_1c->get_list_services_group_by_category_club($checkOrder->club_id, $callback_array[1]);
                 $this->Telegram->sendInline_keyboard(
                     "Выберите услугу", $get_list_services_club
                 );
@@ -336,38 +367,42 @@ class Bot
                 if ($callback_array[1]) {
                     $this->db->updateOrder($this->chatId, $callback_array[1], 'id_groupe');
                 }
-//                $this->Telegram->sendMessage('servicebycategory test ' . $callback_array[0] . $callback_array[1]);
-                $get_list_trainer_by_services = $this->Api_1c->get_list_trainer_by_services($this->club_id, $callback_array[1]);
+                $this->Telegram->sendMessage('servicebycategory test ' . $callback_array[0] . $callback_array[1]);
+                $get_list_trainer_by_services = $this->Api_1c->get_list_trainer_by_services($checkOrder->club_id, $callback_array[1]);
                 $this->Telegram->sendInline_keyboard(
                     "Выберите Тренера:", $get_list_trainer_by_services
                 );
                 break;
             case "trainerbyservices":
                 if ($callback_array[1] and $callback_array[2]) {
+                    $this->Telegram->sendMessage('test ' . $callback_array[0] . $callback_array[1]);
                     $this->db->updateOrder($this->chatId, $callback_array[1], 'id_trener');
                     $this->db->updateOrder($this->chatId, $callback_array[2], 'id_service');
                 }
-//                $this->Telegram->sendMessage('test ' . $callback_array[0] . $callback_array[1]. $callback_array[2]);
+                $this->Telegram->sendMessage('test ' . $callback_array[0] . $callback_array[1]. $callback_array[2]);
                 $date = $this->Api_1c->get_date_services($callback_array[2],$callback_array[1]);
-                $this->Telegram->sendInline_keyboard(
-                    "Стоимость занятия с данным тренером: ". $callback_array[3] ."грн\nДоступные даты \nВыберите дату:", $date
-                );
+                if (isset($date)) {
+                    $this->Telegram->sendInline_keyboard(
+                        "Стоимость занятия с данным тренером: " . $callback_array[3] . "грн\nДоступные даты \nВыберите дату:", $date
+                    );
+                }
                 break;
             case "dateservices":
                 if ($callback_array[1]){
                     $this->db->updateOrder($this->chatId, $callback_array[1], 'date');
-                    $checkOrder = $this->db->checkOrder($this->chatId);
+//                    $checkOrder = $this->db->checkOrder($this->chatId);
                 }
                 $time_service = $this->Api_1c->get_time_services($checkOrder->id_service, $callback_array[1], $checkOrder->id_trener);
                 $this->Telegram->sendInline_keyboard('Выберете удобное для вас время', $time_service);
                 break;
             case "timeservices":
                 if ($callback_array[1]){
+                    $this->Telegram->sendMessage('test ' . $callback_array[0] . $callback_array[1]);
                     $this->db->updateOrder($this->chatId, $callback_array[1], 'time');
-                    $checkOrder = $this->db->checkOrder($this->chatId);
+//                    $checkOrder = $this->db->checkOrder($this->chatId);
+                    $result = $this->Api_1c->add_info_trainer($checkOrder->club_id, $checkOrder->id_service, $this->phone, $checkOrder->date."/".$callback_array[1], $checkOrder->id_trener);
+                    $this->Telegram->sendMessage($result, [["Вернуться в меню"]]);
                 }
-                $this->Api_1c->add_info_trainer($checkOrder->club_id,$checkOrder->id_service, $this->phone, $checkOrder->date.$checkOrder->time, $checkOrder->id_trener);
-
                 break;
 //            case "serviceclient":
 //                $this->db->updateOrder($this->chatId, $callback_array[1], 'id_service');
@@ -378,11 +413,3 @@ class Bot
         }
     }
 }
-
-
-
-
-
-
-
-//Добавить выбор времени, добавить вывод имени

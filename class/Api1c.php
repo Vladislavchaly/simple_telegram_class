@@ -64,14 +64,30 @@ class Api1c
         $get_time_services = $get_time_services['shedule'];
         $array_time = array("00:00:00", "01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00", "06:00:00", "07:00:00", "08:00:00", "09:00:00", "10:00:00", "11:00:00", "12:00:00", "13:00:00", "14:00:00",
             "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00", "20:00:00", "21:00:00", "22:00:00", "23:00:00", "24:00:00");
-        $start = $get_time_services['start'];
-        $end = $get_time_services['end'];
         $time_array[] = array();
-        foreach ($array_time as $array_time_value){
-            if ($start <= $array_time_value and $end >= $array_time_value){
-                $time_array[] = array(
-                    array("text" => $array_time_value, "callback_data" => "timeservices_" . $array_time_value)
-                );
+        if (isset($get_time_services['start'])) {
+            $start = $get_time_services['start'];
+            $end = $get_time_services['end'];
+            foreach ($array_time as $array_time_value) {
+                if ($start <= $array_time_value and $end >= $array_time_value) {
+                    $time_array[] = array(
+                        array("text" => $array_time_value, "callback_data" => "timeservices_" . $array_time_value),
+//                        array("text" => $array_time_value, "callback_data" => "timeservices_" . $array_time_value)
+                    );
+                }
+            }
+        }else {
+            foreach ($get_time_services as $get_time_service_value) {
+                $start = $get_time_service_value['start'];
+                $end = $get_time_service_value['end'];
+                foreach ($array_time as $array_time_value) {
+                    if ($start <= $array_time_value and $end >= $array_time_value) {
+                        $time_array[] = array(
+                            array("text" => $array_time_value, "callback_data" => "timeservices_" . $array_time_value),
+//                        array("text" => $array_time_value, "callback_data" => "timeservices_" . $array_time_value)
+                        );
+                    }
+                }
             }
         }
         return $time_array;
@@ -86,13 +102,20 @@ class Api1c
         $get_date_services = $this->requestPOST('get_date_services', ['id' => "$id", 'id_Service' => "$id_service"]);
         $get_date_services = $get_date_services['shedules'];
         $date_array = array();
-        foreach ($get_date_services as $get_date_services_values){
-            foreach ($get_date_services_values as $get_date_services_value){
-                        $date_array[] = array(
-                            array("text" => $get_date_services_value["date"], "callback_data" => "dateservices_" . $get_date_services_value["date"])
-                        );
+
+            foreach ($get_date_services as $get_date_services_values) {
+                if (isset($get_date_services_values[1])) {
+                foreach ($get_date_services_values as $get_date_services_value) {
+                    $date_array[] = array(
+                        array("text" => $get_date_services_value["date"], "callback_data" => "dateservices_" . $get_date_services_value["date"])
+                    );
+                }
+                }else{
+                    $date_array[] = array(
+                        array("text" => $get_date_services_values["date"], "callback_data" => "dateservices_" . $get_date_services_values["date"])
+                    );
+                }
             }
-        }
         return $date_array;
     }
 
@@ -216,14 +239,29 @@ class Api1c
     public function add_info_trainer($club_id, $id_service, $IDClient, $date, $id){
         //тут должен быть метод добавления пользователя
         $add_info_trainer =  $this->requestPOST('add_info_trainer', ["club_id" => $club_id, "id_service" => $id_service, "IDClient" => $IDClient, "date" => $date, "id" => $id]);
-        return $add_info_trainer;
+//        return $add_info_trainer;
+        $add_info_trainer = $add_info_trainer['Response'];
+        $result = $add_info_trainer['result'];
+        if ($result == "Error"){
+            $return = "Ошибка :".$add_info_trainer['error'];
+        }elseif($result == "OK"){
+            $return = "Спасибо вы успешно добавили запись:\n". $add_info_trainer['service']. "\n" .$add_info_trainer['date']. "\n" .$add_info_trainer['start']." - ".$add_info_trainer['end']  ;
+        }
+        return $return;
     }
 
-//    public function add_info_trainer($club_id, $id_service, $IDClient, $date, $id){
-//        //тут должен быть метод добавления пользователя
-//        $add_info_trainer =  $this->requestPOST('add_info_trainer', ["club_id" => $club_id, "id_service" => $id_service, "IDClient" => $IDClient, "date" => $date, "id" => $id]);
-//        return $add_info_trainer;
-//    }
+    public function remove_info_trainer($id_shedule, $IDClient){
+       $remove_info_trainer =  $this->requestPOST('remove_info_trainer', ["IDClient" => $IDClient, "SheduleID" => $id_shedule]);
+//       return $remove_info_trainer;
+        $remove_info_trainer = $remove_info_trainer['shedule_places'];
+        $result = $remove_info_trainer['result'];
+        if ($result == "Error"){
+            $return = "Ошибка :".$remove_info_trainer['error'];
+        }elseif($result == "OK"){
+            $return = "Спасибо вы успешно удалили запись:\n". $remove_info_trainer['service']. "\n" .$remove_info_trainer['date']. "\n" .$remove_info_trainer['start']." - ".$remove_info_trainer['end']  ;
+        }
+        return $return;
+    }
 
 
     /**
@@ -257,7 +295,7 @@ class Api1c
     /**
      * @param $club_id
      * @param $id_Groupe_Service
-     * @return bool|string
+     * @return array
      * Получить трениров по выбранной услуге
      */
     public function get_list_trainer_by_services($club_id, $id_Groupe_Service){
